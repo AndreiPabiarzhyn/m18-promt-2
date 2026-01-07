@@ -13,6 +13,13 @@
   const cancelBtn = document.getElementById("cancelBtn");
   const applyBtn = document.getElementById("applyBtn");
 
+  // copy modal elements (fallback for Genially iframe)
+  const copyModal = document.getElementById("copyModal");
+  const copyTextarea = document.getElementById("copyTextarea");
+  const copyModalClose = document.getElementById("copyModalClose");
+  const selectAllBtn = document.getElementById("selectAllBtn");
+  const closeBtn2 = document.getElementById("closeBtn2");
+
   // Templates: prompt lines with embedded chips
   const CONFIG = {
     character: {
@@ -77,10 +84,10 @@
   };
 
   // chooser runtime
-  let activeChipEl = null;
   let activeKey = null;
 
   function showToast(msg) {
+    if (!toastEl) return;
     toastEl.textContent = msg;
     toastEl.classList.add("show");
     clearTimeout(showToast._t);
@@ -109,14 +116,12 @@
   function renderPrompt() {
     const tpl = CONFIG[currentTemplate];
     const htmlLines = tpl.lines.map((line) => {
-      // Replace {key} with chip
       const withChips = line.replace(/\{([a-z_]+)\}/g, (_, key) => chipHTML(key));
       return `<p class="line">${withChips}</p>`;
     }).join("");
 
     promptArea.innerHTML = htmlLines;
 
-    // attach handlers to chips
     promptArea.querySelectorAll(".chip").forEach((el) => {
       el.addEventListener("click", () => openChooser(el));
     });
@@ -135,19 +140,16 @@
   }
 
   function openChooser(chipEl) {
-    activeChipEl = chipEl;
     activeKey = chipEl.dataset.key;
 
     const tpl = CONFIG[currentTemplate];
     const options = (tpl.chips[activeKey] || []).slice();
-
     const current = (state[currentTemplate][activeKey] || "").trim();
 
     chooserTitle.textContent = "Выбери вариант";
     chooserOptions.innerHTML = "";
     customInput.value = "";
 
-    // create option buttons
     options.forEach((opt) => {
       const btn = document.createElement("button");
       btn.type = "button";
@@ -163,15 +165,12 @@
 
     chooser.classList.add("open");
     chooser.setAttribute("aria-hidden", "false");
-
-    // focus for quick typing
     setTimeout(() => customInput.focus(), 0);
   }
 
   function closeChooser() {
     chooser.classList.remove("open");
     chooser.setAttribute("aria-hidden", "true");
-    activeChipEl = null;
     activeKey = null;
   }
 
@@ -194,7 +193,6 @@
       return;
     }
 
-    // nothing selected and nothing typed -> just close
     closeChooser();
   }
 
@@ -207,78 +205,127 @@
     ).join("\n");
   }
 
-  async function copyToClipboard(text) {
-    if (navigator.clipboard && window.isSecureContext) {
-      await navigator.clipboard.writeText(text);
+  // ===== Genially/iframe friendly copy =====
+  function fallbackCopyExecCommand(text) {
+    const textarea = document.createElement("textarea");
+    textarea.value = text;
+    textarea.setAttribute("readonly", "");
+    textarea.style.position = "fixed";
+    textarea.style.left = "-9999px";
+    textarea.style.top = "0";
+    textarea.style.opacity = "0";
+    document.body.appendChild(textarea);
+    textarea.focus();
+    textarea.select();
+
+    let ok = false;
+    try { ok = document.execCommand("copy"); } catch (e) { ok = false; }
+
+    document.body.removeChild(textarea);
+    return ok;
+  }
+
+  function openCopyModal(text) {
+    if (!copyModal || !copyTextarea) {
+      showToast("Не удалось скопировать");
       return;
     }
-    const ta = document.createElement("textarea");
-    ta.value = text;
-    ta.style.position = "fixed";
-    ta.style.left = "-9999px";
-    ta.style.top = "0";
-    document.body.appendChild(ta);
-    ta.focus();
-    ta.select();
-    document.execCommand("copy");
-    ta.remove();
+
+    copyTextarea.value = text;
+    copyModal.classList.add("open");
+    copyModal.setAttribute("aria-hidden", "false");
+
+    setTimeout(() => {
+      copyTextarea.focus();
+      copyTextarea.select();
+    }, 0);
+  }
+
+  function closeCopyModal() {
+    if (!copyModal) return;
+    copyModal.classList.remove("open");
+    copyModal.setAttribute("aria-hidden", "true");
+  }
+
+  function copyPromptText() {
+    const text = getPlainPromptText();
+
+    // 1) try execCommand copy (best chance in Genially iframe)
+    const ok = fallbackCopyExecCommand(text);
+
+    if (ok) {
+      showToast("Промпт скопирован");
+      return;
+    }
+
+    // 2) fallback: manual modal
+    openCopyModal(text);
+  }
+
+  // ===== Auto-scale (optional) =====
+  function autoScaleInit() {
+    const fitWrap = document.getElementById("fitWrap");
+    if (!fitWrap) return;
+
+    const BASE_W = 1100;
+    const BASE_H = 620;
+
+    function fit() {
+      const w = window.innerWidth;
+      const h = window.innerHeight;
+      const pad = 12;
+
+      const raw = Math.min((w - pad) / BASE_W, (h - pad) / BASE_H);
+      const scale = Math.floor(raw * 100) / 100; // reduce blur
+
+      fitWrap.style.transform = `scale(${scale})`;
+    }
+
+    window.addEventListener("resize", fit);
+    fit();
+    setTimeout(fit, 50);
+    setTimeout(fit, 200);
+    setTimeout(fit, 600);
   }
 
   // events
   tabs.forEach((btn) => btn.addEventListener("click", () => setTemplate(btn.dataset.template)));
 
-  copyBtn.addEventListener("click", async () => {
-    try {
-      await copyToClipboard(getPlainPromptText());
-      showToast("✅ Промпт скопирован!");
-    } catch {
-      showToast("⚠️ Не получилось скопировать");
-    }
-  });
+  if (copyBtn) copyBtn.addEventListener("click", copyPromptText);
 
-  cancelBtn.addEventListener("click", closeChooser);
-  applyBtn.addEventListener("click", applyChooser);
+  if (cancelBtn) cancelBtn.addEventListener("click", closeChooser);
+  if (applyBtn) applyBtn.addEventListener("click", applyChooser);
 
-  chooser.addEventListener("click", (e) => {
+  if (chooser) chooser.addEventListener("click", (e) => {
     if (e.target === chooser) closeChooser();
   });
 
+  if (copyModalClose) copyModalClose.addEventListener("click", closeCopyModal);
+  if (closeBtn2) closeBtn2.addEventListener("click", closeCopyModal);
+
+  if (selectAllBtn) selectAllBtn.addEventListener("click", () => {
+    if (!copyTextarea) return;
+    copyTextarea.focus();
+    copyTextarea.select();
+  });
+
+  if (copyModal) copyModal.addEventListener("click", (e) => {
+    if (e.target === copyModal) closeCopyModal();
+  });
+
   window.addEventListener("keydown", (e) => {
-    if (!chooser.classList.contains("open")) return;
-    if (e.key === "Escape") closeChooser();
-    if (e.key === "Enter") applyChooser();
+    // chooser
+    if (chooser && chooser.classList.contains("open")) {
+      if (e.key === "Escape") closeChooser();
+      if (e.key === "Enter") applyChooser();
+    }
+    // copy modal
+    if (copyModal && copyModal.classList.contains("open")) {
+      if (e.key === "Escape") closeCopyModal();
+    }
   });
 
   // init
   setTemplate("character");
-})();
-
-
-// ===== AUTO-SCALE (IFRAME FIT) =====
-(function autoScale() {
-  const BASE_W = 1100;
-  const BASE_H = 620;
-
-  const fitWrap = document.getElementById("fitWrap");
-  if (!fitWrap) return;
-
-  function fit() {
-    const w = window.innerWidth;
-    const h = window.innerHeight;
-
-    // небольшой запас от краёв
-    const pad = 12;
-    const scale = Math.min((w - pad) / BASE_W, (h - pad) / BASE_H);
-
-    fitWrap.style.transform = `scale(${scale})`;
-  }
-
-  // сразу + на ресайз
-  window.addEventListener("resize", fit);
-
-  // часто Genially меняет размер не сразу → подстрахуемся
-  fit();
-  setTimeout(fit, 50);
-  setTimeout(fit, 200);
-  setTimeout(fit, 600);
+  autoScaleInit();
 })();

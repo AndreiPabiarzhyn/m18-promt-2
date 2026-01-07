@@ -59,6 +59,25 @@
         </div>
       </div>
     </div>
+        <div id="copyModal" class="copyModal" aria-hidden="true">
+  <div class="copyModalCard" role="dialog" aria-modal="true" aria-label="Скопируй промпт">
+    <div class="copyModalTop">
+      <div class="copyModalTitle">Скопируй промпт</div>
+      <button id="copyModalClose" class="copyModalClose" type="button" aria-label="Закрыть">✕</button>
+    </div>
+
+    <div class="copyModalHint">
+      Нажми <b>Ctrl+C</b> (или <b>долгий тап</b> на телефоне), потом вставь в нейросеть.
+    </div>
+
+    <textarea id="copyTextarea" class="copyTextarea" readonly></textarea>
+
+    <div class="copyModalBtns">
+      <button id="selectAllBtn" class="btnGhost" type="button">Выделить всё</button>
+      <button id="closeBtn2" class="btnAccent" type="button">Готово</button>
+    </div>
+  </div>
+</div>
       </div>
     </div>
   </div>

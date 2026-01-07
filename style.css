@@ -363,3 +363,82 @@ html, body{
 .fitWrap{
   width: 1100px;
 
+/* ===== Manual Copy Modal ===== */
+.copyModal{
+  position: fixed;
+  inset: 0;
+  background: rgba(0,0,0,.62);
+  display: none;
+  align-items: center;
+  justify-content: center;
+  padding: 16px;
+  z-index: 999;
+}
+
+.copyModal.open{ display:flex; }
+
+.copyModalCard{
+  width: min(820px, 100%);
+  background: #0a1726;
+  border-radius: 18px;
+  box-shadow: 0 18px 60px rgba(0,0,0,.55);
+  padding: 14px;
+}
+
+.copyModalTop{
+  display:flex;
+  align-items:center;
+  justify-content:space-between;
+  gap: 10px;
+  margin-bottom: 8px;
+}
+
+.copyModalTitle{
+  font-size: 18px;
+  font-weight: 1000;
+  color: rgba(124,240,255,.95);
+}
+
+.copyModalClose{
+  border: none;
+  background: rgba(234,243,255,.12);
+  color: rgba(234,243,255,.9);
+  border-radius: 12px;
+  padding: 10px 12px;
+  cursor: pointer;
+  font-weight: 1000;
+}
+
+.copyModalHint{
+  color: rgba(234,243,255,.82);
+  font-size: 13px;
+  font-weight: 700;
+  margin-bottom: 10px;
+}
+
+.copyTextarea{
+  width: 100%;
+  min-height: 220px;
+  resize: none;
+  border-radius: 14px;
+  border: 1px solid rgba(167,192,221,.18);
+  background: rgba(5, 12, 20, .55);
+  color: rgba(234,243,255,.95);
+  outline: none;
+  padding: 12px;
+  font-size: 15px;
+  line-height: 1.45;
+}
+
+.copyTextarea:focus{
+  box-shadow: 0 0 0 2px rgba(215,255,89,.25);
+  border-color: rgba(215,255,89,.35);
+}
+
+.copyModalBtns{
+  display:flex;
+  justify-content:flex-end;
+  gap: 10px;
+  flex-wrap: wrap;
+  margin-top: 12px;
+}
