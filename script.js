@@ -1,75 +1,91 @@
+// script.js
 (() => {
-  const controlsEl = document.getElementById("controls");
-  const promptLinesEl = document.getElementById("promptLines");
+  const promptArea = document.getElementById("promptArea");
   const copyBtn = document.getElementById("copyBtn");
   const toastEl = document.getElementById("toast");
-  const tabButtons = Array.from(document.querySelectorAll(".tab"));
+  const tabs = Array.from(document.querySelectorAll(".tab"));
 
-  const CUSTOM_VALUE = "__custom__";
-  const customLabel = "✍️ Свой вариант…";
+  // chooser elements
+  const chooser = document.getElementById("chooser");
+  const chooserTitle = document.getElementById("chooserTitle");
+  const chooserOptions = document.getElementById("chooserOptions");
+  const customInput = document.getElementById("customInput");
+  const cancelBtn = document.getElementById("cancelBtn");
+  const applyBtn = document.getElementById("applyBtn");
 
-  const TEMPLATES = {
+  // Templates: prompt lines with embedded chips
+  const CONFIG = {
     character: {
-      fields: [
-        { key: "character", label: "Кто герой?", type: "select", options: ["котик","щенок","зайчик","медвежонок","единорог","робот"] },
-        { key: "style", label: "Стиль", type: "select", options: ["мультяшный","акварель","пластилин","детская книга","наклейка (стикер)","3D-игрушка"] },
-        { key: "mood", label: "Настроение", type: "select", options: ["весёлое","доброе","смелое","удивлённое","сонное","волшебное"] },
-        { key: "colors", label: "Цвета", type: "select", options: ["яркие","пастельные","тёплые","холодные","радужные","чёрно-белые"] },
-        { key: "extra", label: "Доп. детали", type: "input", placeholder: "например: в шляпе, с рюкзаком, с шариком..." },
-        { key: "bg", label: "Фон вокруг героя", type: "select", options: ["прозрачный фон","без фона","на простом фоне","на фоне неба","на фоне леса","в комнате"] },
-      ],
+      title: "Персонаж",
+      chips: {
+        hero: ["котик", "щенок", "зайчик", "медвежонок", "единорог", "робот"],
+        style: ["мультяшный", "акварель", "пластилин", "детская книга", "стикер", "3D-игрушка"],
+        mood: ["весёлое", "доброе", "смелое", "удивлённое", "сонное", "волшебное"],
+        colors: ["яркие", "пастельные", "тёплые", "холодные", "радужные", "чёрно-белые"],
+        extra: ["в шляпе", "с рюкзаком", "с шариком", "в очках", "с короной", "с крыльями"],
+        bg: ["прозрачный", "без фона", "небо", "лес", "комната", "город"]
+      },
       lines: [
-        (v) => `Нарисуй ${blank(v.character)} как главный персонаж.`,
-        (v) => `Стиль: ${blank(v.style)}. Настроение: ${blank(v.mood)}.`,
-        (v) => `Цвета: ${blank(v.colors)}.`,
-        (v) => `Дополнительные детали: ${blank(v.extra)}.`,
-        (v) => `Фон: ${blank(v.bg)}.`,
-        () => `Картинка для детской книжки, простые формы, чёткие линии, без текста, высокое качество.`
+        `Нарисуй {hero} как главного героя.`,
+        `Стиль: {style}. Настроение: {mood}.`,
+        `Цвета: {colors}.`,
+        `Дополнительно: {extra}.`,
+        `Фон вокруг героя: {bg}.`,
+        `Картинка для детской книжки: простые формы, чёткие линии, без текста, высокое качество.`
       ]
     },
-
     background: {
-      fields: [
-        { key: "place", label: "Где это происходит?", type: "select", options: ["в лесу","в городе","в замке","на пляже","в космосе","в школе"] },
-        { key: "time", label: "Время", type: "select", options: ["утро","день","вечер","ночь","закат","рассвет"] },
-        { key: "style", label: "Стиль", type: "select", options: ["мультяшный","акварель","детская книга","пастельный","бумажная аппликация","3D-мир"] },
-        { key: "mood", label: "Настроение", type: "select", options: ["волшебное","спокойное","праздничное","таинственное","очень радостное","уютное"] },
-        { key: "details", label: "Что добавить?", type: "input", placeholder: "например: радуга, звёзды, фонарики..." },
-        { key: "camera", label: "Какой вид?", type: "select", options: ["широкий кадр","панорама","вид сверху","вид на уровне глаз","далеко-далеко","середина сцены"] },
-      ],
+      title: "Фон",
+      chips: {
+        place: ["лес", "город", "замок", "пляж", "космос", "школа"],
+        time: ["утро", "день", "вечер", "ночь", "закат", "рассвет"],
+        style: ["мультяшный", "акварель", "детская книга", "пастельный", "аппликация", "3D-мир"],
+        mood: ["волшебное", "спокойное", "праздничное", "таинственное", "радостное", "уютное"],
+        details: ["радуга", "звёзды", "фонарики", "снежинки", "цветы", "облака"],
+        camera: ["широкий кадр", "панорама", "вид сверху", "на уровне глаз", "далеко", "середина сцены"]
+      },
       lines: [
-        (v) => `Нарисуй фон для детской книжки: ${blank(v.place)}.`,
-        (v) => `Время: ${blank(v.time)}. Настроение: ${blank(v.mood)}.`,
-        (v) => `Стиль: ${blank(v.style)}.`,
-        (v) => `Добавь детали: ${blank(v.details)}.`,
-        (v) => `Камера: ${blank(v.camera)}.`,
-        () => `Фон без персонажей, чистая композиция, мягкий свет, без текста, высокое качество.`
+        `Нарисуй фон для детской книжки: {place}.`,
+        `Время: {time}. Настроение: {mood}.`,
+        `Стиль: {style}.`,
+        `Добавь детали: {details}.`,
+        `Камера: {camera}.`,
+        `Фон без персонажей, чисто и красиво, мягкий свет, без текста, высокое качество.`
       ]
     }
   };
 
-  // state with "select value" + "custom text" for each select field
+  // current state (selected values)
+  let currentTemplate = "character";
   const state = {
-    template: "character",
-    values: {
-      character: {
-        character: { sel: "котик", custom: "" },
-        style: { sel: "мультяшный", custom: "" },
-        mood: { sel: "весёлое", custom: "" },
-        colors: { sel: "яркие", custom: "" },
-        extra: "",
-        bg: { sel: "прозрачный фон", custom: "" },
-      },
-      background: {
-        place: { sel: "в лесу", custom: "" },
-        time: { sel: "день", custom: "" },
-        style: { sel: "детская книга", custom: "" },
-        mood: { sel: "уютное", custom: "" },
-        details: "",
-        camera: { sel: "широкий кадр", custom: "" },
-      }
+    character: {
+      hero: "котик",
+      style: "мультяшный",
+      mood: "весёлое",
+      colors: "яркие",
+      extra: "в шляпе",
+      bg: "прозрачный",
+    },
+    background: {
+      place: "лес",
+      time: "день",
+      style: "детская книга",
+      mood: "уютное",
+      details: "звёзды",
+      camera: "широкий кадр",
     }
   };
+
+  // chooser runtime
+  let activeChipEl = null;
+  let activeKey = null;
+
+  function showToast(msg) {
+    toastEl.textContent = msg;
+    toastEl.classList.add("show");
+    clearTimeout(showToast._t);
+    showToast._t = setTimeout(() => toastEl.classList.remove("show"), 1400);
+  }
 
   function escapeHtml(str) {
     return String(str)
@@ -80,144 +96,115 @@
       .replaceAll("'", "&#039;");
   }
 
-  function getValue(key) {
-    const vals = state.values[state.template];
-    const v = vals[key];
-    if (typeof v === "string") return v;
-    if (!v) return "";
-    if (v.sel === CUSTOM_VALUE) return (v.custom || "").trim();
-    return v.sel;
-  }
-
-  function safe(value) {
-    const v = (value || "").trim();
-    return v ? v : "...";
-  }
-
-  function blank(value) {
-    const v = (value || "").trim();
-    return v
-      ? `<span class="blank">${escapeHtml(v)}</span>`
-      : `<span class="blank">...</span>`;
-  }
-
-  function buildControls() {
-    const tpl = TEMPLATES[state.template];
-    const vals = state.values[state.template];
-
-    controlsEl.innerHTML = "";
-
-    tpl.fields.forEach((f) => {
-      const wrap = document.createElement("div");
-      wrap.className = "field";
-
-      const label = document.createElement("label");
-      label.textContent = f.label;
-      wrap.appendChild(label);
-
-      if (f.type === "select") {
-        // select
-        const select = document.createElement("select");
-
-        // options
-        f.options.forEach((opt) => {
-          const o = document.createElement("option");
-          o.value = opt;
-          o.textContent = opt;
-          select.appendChild(o);
-        });
-
-        // custom option
-        const customOpt = document.createElement("option");
-        customOpt.value = CUSTOM_VALUE;
-        customOpt.textContent = customLabel;
-        select.appendChild(customOpt);
-
-        // init state for this key if missing
-        if (!vals[f.key]) vals[f.key] = { sel: f.options[0], custom: "" };
-
-        select.value = vals[f.key].sel ?? f.options[0];
-
-        // custom input (hidden unless selected)
-        const customInput = document.createElement("input");
-        customInput.type = "text";
-        customInput.placeholder = "Напиши свой вариант…";
-        customInput.value = vals[f.key].custom ?? "";
-        customInput.style.marginTop = "8px";
-        customInput.style.display = (select.value === CUSTOM_VALUE) ? "block" : "none";
-
-        select.addEventListener("change", () => {
-          vals[f.key].sel = select.value;
-          // show/hide input
-          customInput.style.display = (select.value === CUSTOM_VALUE) ? "block" : "none";
-          renderPrompt();
-        });
-
-        customInput.addEventListener("input", () => {
-          vals[f.key].custom = customInput.value;
-          renderPrompt();
-        });
-
-        wrap.appendChild(select);
-        wrap.appendChild(customInput);
-      } else {
-        // plain input
-        const input = document.createElement("input");
-        input.type = "text";
-        input.placeholder = f.placeholder || "";
-        input.value = vals[f.key] ?? "";
-
-        input.addEventListener("input", () => {
-          vals[f.key] = input.value;
-          renderPrompt();
-        });
-
-        wrap.appendChild(input);
-      }
-
-      controlsEl.appendChild(wrap);
-    });
+  function chipHTML(key) {
+    const value = state[currentTemplate][key] || "";
+    const display = value.trim() ? value : "нажми";
+    const isEmpty = !value.trim();
+    return `<span class="chip ${isEmpty ? "empty" : ""}" data-key="${escapeHtml(key)}">
+      <span class="val">${escapeHtml(display)}</span>
+      <span class="caret">▾</span>
+    </span>`;
   }
 
   function renderPrompt() {
-    const tpl = TEMPLATES[state.template];
+    const tpl = CONFIG[currentTemplate];
+    const htmlLines = tpl.lines.map((line) => {
+      // Replace {key} with chip
+      const withChips = line.replace(/\{([a-z_]+)\}/g, (_, key) => chipHTML(key));
+      return `<p class="line">${withChips}</p>`;
+    }).join("");
 
-    const view = new Proxy({}, {
-      get: (_, key) => getValue(String(key))
-    });
+    promptArea.innerHTML = htmlLines;
 
-    promptLinesEl.innerHTML = "";
-    tpl.lines.forEach((fn) => {
-      const li = document.createElement("li");
-      li.innerHTML = fn(view);
-      promptLinesEl.appendChild(li);
+    // attach handlers to chips
+    promptArea.querySelectorAll(".chip").forEach((el) => {
+      el.addEventListener("click", () => openChooser(el));
     });
   }
 
-  function buildFinalPromptText() {
-    const v = (k) => safe(getValue(k));
+  function setTemplate(name) {
+    currentTemplate = name;
 
-    if (state.template === "character") {
-      const extra = safe(state.values.character.extra);
-      return [
-        `Нарисуй ${v("character")} как главный персонаж.`,
-        `Стиль: ${v("style")}. Настроение: ${v("mood")}.`,
-        `Цвета: ${v("colors")}.`,
-        `Дополнительные детали: ${extra}.`,
-        `Фон: ${v("bg")}.`,
-        `Картинка для детской книжки, простые формы, чёткие линии, без текста, высокое качество.`
-      ].join("\n");
+    tabs.forEach((b) => {
+      const active = b.dataset.template === name;
+      b.classList.toggle("active", active);
+      b.setAttribute("aria-selected", active ? "true" : "false");
+    });
+
+    renderPrompt();
+  }
+
+  function openChooser(chipEl) {
+    activeChipEl = chipEl;
+    activeKey = chipEl.dataset.key;
+
+    const tpl = CONFIG[currentTemplate];
+    const options = (tpl.chips[activeKey] || []).slice();
+
+    const current = (state[currentTemplate][activeKey] || "").trim();
+
+    chooserTitle.textContent = "Выбери вариант";
+    chooserOptions.innerHTML = "";
+    customInput.value = "";
+
+    // create option buttons
+    options.forEach((opt) => {
+      const btn = document.createElement("button");
+      btn.type = "button";
+      btn.className = "optBtn" + (opt === current ? " selected" : "");
+      btn.textContent = opt;
+      btn.addEventListener("click", () => {
+        chooserOptions.querySelectorAll(".optBtn").forEach(x => x.classList.remove("selected"));
+        btn.classList.add("selected");
+        customInput.value = "";
+      });
+      chooserOptions.appendChild(btn);
+    });
+
+    chooser.classList.add("open");
+    chooser.setAttribute("aria-hidden", "false");
+
+    // focus for quick typing
+    setTimeout(() => customInput.focus(), 0);
+  }
+
+  function closeChooser() {
+    chooser.classList.remove("open");
+    chooser.setAttribute("aria-hidden", "true");
+    activeChipEl = null;
+    activeKey = null;
+  }
+
+  function applyChooser() {
+    if (!activeKey) return;
+
+    const typed = (customInput.value || "").trim();
+    if (typed) {
+      state[currentTemplate][activeKey] = typed;
+      renderPrompt();
+      closeChooser();
+      return;
     }
 
-    const details = safe(state.values.background.details);
-    return [
-      `Нарисуй фон для детской книжки: ${v("place")}.`,
-      `Время: ${v("time")}. Настроение: ${v("mood")}.`,
-      `Стиль: ${v("style")}.`,
-      `Добавь детали: ${details}.`,
-      `Камера: ${v("camera")}.`,
-      `Фон без персонажей, чистая композиция, мягкий свет, без текста, высокое качество.`
-    ].join("\n");
+    const selectedBtn = chooserOptions.querySelector(".optBtn.selected");
+    if (selectedBtn) {
+      state[currentTemplate][activeKey] = selectedBtn.textContent.trim();
+      renderPrompt();
+      closeChooser();
+      return;
+    }
+
+    // nothing selected and nothing typed -> just close
+    closeChooser();
+  }
+
+  function getPlainPromptText() {
+    const tpl = CONFIG[currentTemplate];
+    const values = state[currentTemplate];
+
+    return tpl.lines.map((line) =>
+      line.replace(/\{([a-z_]+)\}/g, (_, key) => values[key] ? values[key] : "...")
+    ).join("\n");
   }
 
   async function copyToClipboard(text) {
@@ -237,37 +224,31 @@
     ta.remove();
   }
 
-  function showToast(msg) {
-    toastEl.textContent = msg;
-    toastEl.classList.add("show");
-    clearTimeout(showToast._t);
-    showToast._t = setTimeout(() => toastEl.classList.remove("show"), 1400);
-  }
-
-  function setTemplate(next) {
-    state.template = next;
-
-    tabButtons.forEach((b) => {
-      const isActive = b.dataset.template === next;
-      b.classList.toggle("active", isActive);
-      b.setAttribute("aria-selected", isActive ? "true" : "false");
-    });
-
-    buildControls();
-    renderPrompt();
-  }
-
-  tabButtons.forEach((btn) => btn.addEventListener("click", () => setTemplate(btn.dataset.template)));
+  // events
+  tabs.forEach((btn) => btn.addEventListener("click", () => setTemplate(btn.dataset.template)));
 
   copyBtn.addEventListener("click", async () => {
-    const text = buildFinalPromptText();
     try {
-      await copyToClipboard(text);
+      await copyToClipboard(getPlainPromptText());
       showToast("✅ Промпт скопирован!");
     } catch {
       showToast("⚠️ Не получилось скопировать");
     }
   });
 
+  cancelBtn.addEventListener("click", closeChooser);
+  applyBtn.addEventListener("click", applyChooser);
+
+  chooser.addEventListener("click", (e) => {
+    if (e.target === chooser) closeChooser();
+  });
+
+  window.addEventListener("keydown", (e) => {
+    if (!chooser.classList.contains("open")) return;
+    if (e.key === "Escape") closeChooser();
+    if (e.key === "Enter") applyChooser();
+  });
+
+  // init
   setTemplate("character");
 })();

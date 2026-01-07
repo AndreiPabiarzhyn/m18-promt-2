@@ -1,8 +1,9 @@
+/* style.css */
 :root{
   --bg:#07121f;
-  --card:#0b1b2e;
+  --panel: rgba(11,27,46,.55);
   --text:#eaf3ff;
-  --muted:#a7c0dd;
+  --muted: rgba(234,243,255,.75);
   --accent:#d7ff59;
   --accent2:#7cf0ff;
   --shadow: 0 10px 30px rgba(0,0,0,.25);
@@ -13,42 +14,41 @@
 html,body{ height:100%; }
 body{
   margin:0;
+  overflow:hidden; /* iframe friendly */
   font-family: system-ui, -apple-system, Segoe UI, Roboto, Arial, sans-serif;
   background: radial-gradient(1200px 700px at 20% 10%, #0b2440 0%, var(--bg) 60%, #050b12 100%);
   color:var(--text);
 }
 
 .app{
+  height: 100vh;
   max-width: 1100px;
   margin: 0 auto;
-  padding: 18px 14px 14px;
+  padding: 14px 14px 12px;
+
+  display:flex;
+  flex-direction:column;
+  gap: 10px;
 }
 
-/* ---------- header ---------- */
+/* header */
 .top{
   display:flex;
-  gap:14px;
-  align-items:flex-end;
+  align-items:center;
   justify-content:space-between;
+  gap: 10px;
   flex-wrap:wrap;
-  margin-bottom: 12px;
 }
 
 .badge{
   display:inline-block;
-  padding:6px 10px;
+  padding:8px 12px;
   background: rgba(215,255,89,.12);
   color: var(--accent);
   border-radius: 999px;
+  font-weight: 900;
+  letter-spacing:.4px;
   font-size: 12px;
-  letter-spacing:.2px;
-  width: fit-content;
-}
-
-.title h1{
-  margin: 8px 0 0;
-  font-size: 30px;
-  line-height: 1.1;
 }
 
 .tabs{
@@ -62,13 +62,13 @@ body{
 .tab{
   border:0;
   background: transparent;
-  color: rgba(234,243,255,.8);
-  padding: 10px 14px;
+  color: rgba(234,243,255,.85);
+  padding: 10px 16px;
   border-radius: 999px;
   cursor:pointer;
-  font-weight: 800;
-  font-size: 13px;
-  opacity: .8;
+  font-weight: 900;
+  font-size: 14px;
+  opacity: .85;
 }
 
 .tab.active{
@@ -77,108 +77,111 @@ body{
   opacity: 1;
 }
 
-/* ---------- layout ---------- */
-.grid{
-  display:grid;
-  grid-template-columns: 1fr 1.15fr;
-  gap: 12px;
-}
-
-@media (max-width: 920px){
-  .grid{ grid-template-columns: 1fr; }
-}
-
-/* ---------- cards (minimal) ---------- */
+/* main card */
 .card{
-  background: rgba(11,27,46,.55);
+  flex: 1;
+  min-height: 0;
+  background: var(--panel);
   border-radius: var(--radius);
   box-shadow: var(--shadow);
   padding: 12px;
-  overflow:hidden;
-}
-
-.cardTitle{
-  margin: 0 0 10px;
-  font-size: 16px;
-  color: rgba(124,240,255,.95);
-  letter-spacing: .2px;
-}
-
-/* ---------- controls ---------- */
-.controls{
-  display:grid;
-  gap: 8px;              /* ближе друг к другу */
-}
-
-.field{
-  background: rgba(5, 12, 20, .25);
-  border-radius: 14px;
-  padding: 10px;
-}
-
-.field label{
-  display:block;
-  color: rgba(234,243,255,.85);
-  font-size: 13px;       /* немного больше */
-  margin-bottom: 6px;
-  font-weight: 800;
-}
-
-.field select,
-.field input{
-  width:100%;
-  padding: 12px 12px;    /* чуть выше, легче попадать */
-  border-radius: 12px;
-  border: none;          /* убрали обводки */
-  background: rgba(5, 12, 20, .55);
-  color: var(--text);
-  outline: none;
-  font-size: 15px;       /* больше */
-}
-
-.field input::placeholder{ color: rgba(167,192,221,.7); }
-
-.field select:focus,
-.field input:focus{
-  box-shadow: 0 0 0 2px rgba(215,255,89,.25);
-}
-
-/* ---------- prompt preview ---------- */
-.previewCard .promptBox{
-  background: rgba(5, 12, 20, .35);
-  border-radius: 14px;
-  padding: 12px;
-}
-
-.promptLines{
-  margin:0;
-  padding-left: 18px;
-  display:grid;
+  display:flex;
+  flex-direction:column;
   gap: 10px;
 }
 
-.promptLines li{
-  color: rgba(234,243,255,.95);
-  line-height: 1.45;
-  font-size: 17px;       /* ВАЖНО: промпт крупнее */
+.cardHead{
+  display:flex;
+  align-items:baseline;
+  justify-content:space-between;
+  gap: 10px;
+  flex-wrap:wrap;
 }
 
-.blank{
-  display:inline-block;
-  min-width: 120px;
-  padding: 0 2px 2px;
-  border-bottom: 2px solid rgba(215,255,89,.85);
-  color: var(--accent);
+.cardTitle{
+  margin:0;
+  font-size: 18px;
+  color: rgba(124,240,255,.95);
   font-weight: 900;
 }
 
-/* ---------- button ---------- */
+.hint{
+  color: var(--muted);
+  font-size: 13px;
+  font-weight: 700;
+}
+
+/* prompt area */
+.promptArea{
+  flex: 1;
+  min-height: 0;
+  overflow:auto;     /* scroll only here if needed */
+  padding: 6px 2px;
+}
+
+.line{
+  margin: 0 0 12px 0;
+  font-size: 20px;   /* big for kids */
+  line-height: 1.6;
+  font-weight: 700;
+  color: rgba(234,243,255,.92);
+}
+
+@media (max-width: 920px){
+  .line{ font-size: 18px; }
+}
+
+/* clickable chips inside prompt */
+.chip{
+  display:inline-flex;
+  align-items:center;
+  gap: 8px;
+  padding: 8px 12px;
+  margin: 2px 2px;
+  border-radius: 14px;
+  background: rgba(5,12,20,.45);
+  color: var(--accent);
+  font-weight: 1000;
+  cursor:pointer;
+  user-select:none;
+  -webkit-tap-highlight-color: transparent;
+}
+
+.chip:active{ transform: translateY(1px); }
+
+.chip .caret{
+  color: rgba(215,255,89,.9);
+  font-size: 16px;
+  line-height: 1;
+  transform: translateY(-1px);
+}
+
+.chip.empty{
+  color: rgba(215,255,89,.95);
+  border: 2px dashed rgba(215,255,89,.55);
+  background: rgba(215,255,89,.08);
+}
+
+.small{
+  color: rgba(234,243,255,.82);
+  font-weight: 700;
+}
+
+/* actions */
+.actions{
+  position: relative;
+  display:flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 10px;
+}
+
 .copyBtn{
-  width:100%;
-  margin-top: 12px;
+  flex: 1;
+  min-width: 220px;
   padding: 14px 14px;
   border-radius: 14px;
-  border: none;          /* минимализм */
+  border: none;
   background: var(--accent);
   color: #15210a;
   font-weight: 1000;
@@ -189,13 +192,40 @@ body{
 .copyBtn:active{ transform: translateY(1px); }
 
 .toast{
-  margin-top: 10px;
-  min-height: 18px;
-  color: rgba(234,243,255,.92);
-  font-size: 14px;       /* чуть больше */
+  position: absolute;
+  bottom: 100%;               /* выше кнопки */
+  margin-bottom: 10px;
+
+  min-width: 220px;
+  max-width: 90%;
+
+  padding: 10px 14px;
+  border-radius: 14px;
+
+  background: rgba(5, 12, 20, .75);
+  border: 1px solid rgba(215,255,89,.35);
+
+  color: rgba(234,243,255,.95);
+  font-size: 14px;
+  font-weight: 900;
+  text-align: center;
+
   opacity: 0;
-  transform: translateY(-4px);
-  transition: opacity .18s ease, transform .18s ease;
+  transform: translateY(6px);
+  pointer-events: none;
+
+  transition: opacity .2s ease, transform .2s ease;
+  z-index: 5;
+}
+
+.toast.show{
+  opacity: 1;
+  transform: translateY(0);
+}
+
+.toast.show{
+  opacity: 1;
+  transform: translateY(0);
 }
 
 .toast.show{
@@ -204,78 +234,112 @@ body{
 }
 
 .footer{
-  margin-top: 10px;
   color: rgba(167,192,221,.6);
   font-size: 12px;
   text-align:center;
 }
 
-/* ===== FIT TO IFRAME (NO SCALE) ===== */
-html, body{
-  height: 100%;
-  margin: 0;
+/* chooser popup */
+.chooser{
+  position: fixed;
+  inset: 0;
+  background: rgba(0,0,0,.55);
+  display:none;
+  align-items:center;
+  justify-content:center;
+  padding: 16px;
 }
 
-body{
-  overflow: hidden; /* весь iframe без скролла */
+.chooser.open{ display:flex; }
+
+.chooserCard{
+  width: min(760px, 100%);
+  background: rgba(10, 24, 40, .95);
+  border-radius: 18px;
+  box-shadow: 0 20px 70px rgba(0,0,0,.5);
+  padding: 14px;
 }
 
-/* app ровно по высоте iframe */
-.app--fit{
-  height: 100vh;
-  max-width: 1100px;
-  margin: 0 auto;
-  padding: 14px 14px 10px;
+.chooserTitle{
+  font-size: 18px;
+  font-weight: 1000;
+  color: rgba(124,240,255,.95);
+  margin-bottom: 10px;
+}
 
-  display: flex;
-  flex-direction: column;
+.chooserOptions{
+  display:flex;
+  flex-wrap:wrap;
+  gap: 10px;
+  margin-bottom: 12px;
+}
+
+.optBtn{
+  border: none;
+  cursor:pointer;
+  border-radius: 14px;
+  padding: 12px 14px;
+  background: rgba(5,12,20,.55);
+  color: rgba(234,243,255,.95);
+  font-weight: 900;
+  font-size: 16px; /* finger friendly */
+}
+
+.optBtn:active{ transform: translateY(1px); }
+.optBtn.selected{
+  background: rgba(215,255,89,.18);
+  color: var(--accent);
+}
+
+.chooserCustom{
+  background: rgba(5,12,20,.35);
+  border-radius: 14px;
+  padding: 12px;
+  display:grid;
   gap: 10px;
 }
 
-/* main занимает остаток по высоте */
-.grid--fit{
-  flex: 1;
-  min-height: 0;     /* КРИТИЧЕСКИ важно */
-  overflow: hidden;  /* скролл будет внутри блоков */
+.customLabel{
+  font-weight: 900;
+  font-size: 13px;
+  color: rgba(234,243,255,.85);
 }
 
-/* карточки растягиваем по высоте main */
-.card--fit{
-  height: 100%;
-  display: flex;
-  flex-direction: column;
-  min-height: 0;
+.customInput{
+  width: 100%;
+  border-radius: 12px;
+  border: none;
+  background: rgba(5, 12, 20, .6);
+  color: var(--text);
+  outline: none;
+  padding: 12px;
+  font-size: 16px;
 }
 
-/* левый блок: если много полей — скролл внутри */
-.controls--scroll{
-  flex: 1;
-  min-height: 0;
-  overflow: auto;
-  padding-right: 6px;
+.customInput:focus{ box-shadow: 0 0 0 2px rgba(215,255,89,.25); }
+
+.chooserBtns{
+  display:flex;
+  gap: 10px;
+  justify-content:flex-end;
+  flex-wrap:wrap;
 }
 
-/* правый блок */
-.promptBox--fit{
-  flex: 1;
-  min-height: 0;
-  display: flex;
-  flex-direction: column;
+.btnGhost, .btnAccent{
+  border-radius: 14px;
+  padding: 12px 14px;
+  font-weight: 1000;
+  cursor:pointer;
+  border: none;
+  font-size: 15px;
 }
 
-/* список промпта скроллится внутри */
-.promptLines--scroll{
-  flex: 1;
-  min-height: 0;
-  overflow: auto;
-  padding-right: 6px;
+.btnGhost{
+  background: rgba(234,243,255,.12);
+  color: rgba(234,243,255,.92);
 }
 
-/* кнопка всегда снизу видна */
-.copyBtn{
-  flex: 0 0 auto;
-}
-.footer{
-  flex: 0 0 auto;
-  margin-top: 0;
+.btnAccent{
+  background: var(--accent);
+  color: #15210a;
 }

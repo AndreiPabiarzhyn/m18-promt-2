@@ -1,54 +1,60 @@
+<!-- index.html -->
 <!doctype html>
 <html lang="ru">
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width,initial-scale=1" />
-  <title>Prompt Builder (Kids)</title>
+  <title>Prompt Builder • Kids</title>
   <link rel="stylesheet" href="style.css" />
 </head>
 <body>
-  <!-- App fits to iframe height without scaling -->
-  <div class="app app--fit">
+  <div class="app">
     <header class="top">
-      <div class="title">
+      <div class="brand">
         <div class="badge">KODLAND</div>
       </div>
 
       <div class="tabs" role="tablist" aria-label="Выбор шаблона">
-        <button class="tab active" data-template="character" role="tab" aria-selected="true">Промпт для персонажа</button>
-        <button class="tab" data-template="background" role="tab" aria-selected="false">Промпт для фона</button>
+        <button class="tab active" data-template="character" role="tab" aria-selected="true">Персонаж</button>
+        <button class="tab" data-template="background" role="tab" aria-selected="false">Фон</button>
       </div>
     </header>
 
-    <!-- main area that must fit remaining height -->
-    <main class="grid grid--fit">
-      <!-- LEFT: Controls -->
-      <section class="card card--fit">
-        <h2 class="cardTitle">1. Выбор вариантов →</h2>
-        <!-- scroll is here if needed -->
-        <div id="controls" class="controls controls--scroll"></div>
-      </section>
+    <main class="card">
+      <div class="cardHead">
+        <h2 class="cardTitle">Кликайте по ярким словам 👇</h2>
+      </div>
 
-      <!-- RIGHT: Prompt preview -->
-      <section class="card previewCard card--fit">
-        <h2 class="cardTitle">2. Готовый промпт</h2>
+      <!-- PROMPT AREA -->
+      <div id="promptArea" class="promptArea" aria-label="Редактор промпта"></div>
 
-        <div class="promptBox promptBox--fit">
-          <!-- scroll is here if needed -->
-          <ol id="promptLines" class="promptLines promptLines--scroll"></ol>
-
-          <button id="copyBtn" class="copyBtn" type="button">
-            Скопировать промпт
-          </button>
-
-          <div id="toast" class="toast" aria-live="polite" aria-atomic="true"></div>
-        </div>
-      </section>
+      <div class="actions">
+        <button id="copyBtn" class="copyBtn" type="button">Скопировать промпт</button>
+        <div id="toast" class="toast" aria-live="polite" aria-atomic="true"></div>
+      </div>
     </main>
 
     <footer class="footer">
-      <span>FunTech • Prompt Builder • Andrei Pabiarzhyn</span>
+      <span>FunTech • Prompt Builder •</span>
     </footer>
+
+    <!-- Popup chooser -->
+    <div id="chooser" class="chooser" aria-hidden="true">
+      <div class="chooserCard" role="dialog" aria-modal="true" aria-label="Выбор варианта">
+        <div class="chooserTitle" id="chooserTitle">Выбери вариант</div>
+
+        <div id="chooserOptions" class="chooserOptions"></div>
+
+        <div class="chooserCustom">
+          <label class="customLabel" for="customInput">Или напиши свой вариант:</label>
+          <input id="customInput" class="customInput" type="text" placeholder="Например: в очках, с шариком..." />
+          <div class="chooserBtns">
+            <button id="cancelBtn" class="btnGhost" type="button">Отмена</button>
+            <button id="applyBtn" class="btnAccent" type="button">Готово</button>
+          </div>
+        </div>
+      </div>
+    </div>
   </div>
 
   <script src="script.js"></script>
