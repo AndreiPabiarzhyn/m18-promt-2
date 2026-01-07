@@ -343,3 +343,23 @@ body{
   background: var(--accent);
   color: #15210a;
 }
+
+/* ===== AUTO SCALE TO IFRAME ===== */
+html, body{
+  height: 100%;
+  margin: 0;
+  overflow: hidden;
+}
+
+.stage{
+  width: 100vw;
+  height: 100vh;
+  display:flex;
+  align-items:center;
+  justify-content:center;
+}
+
+/* БАЗОВЫЙ РАЗМЕР макета (под него рисуем дизайн) */
+.fitWrap{
+  width: 1100px;
+

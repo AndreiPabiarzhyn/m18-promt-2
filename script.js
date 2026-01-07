@@ -252,3 +252,33 @@
   // init
   setTemplate("character");
 })();
+
+
+// ===== AUTO-SCALE (IFRAME FIT) =====
+(function autoScale() {
+  const BASE_W = 1100;
+  const BASE_H = 620;
+
+  const fitWrap = document.getElementById("fitWrap");
+  if (!fitWrap) return;
+
+  function fit() {
+    const w = window.innerWidth;
+    const h = window.innerHeight;
+
+    // небольшой запас от краёв
+    const pad = 12;
+    const scale = Math.min((w - pad) / BASE_W, (h - pad) / BASE_H);
+
+    fitWrap.style.transform = `scale(${scale})`;
+  }
+
+  // сразу + на ресайз
+  window.addEventListener("resize", fit);
+
+  // часто Genially меняет размер не сразу → подстрахуемся
+  fit();
+  setTimeout(fit, 50);
+  setTimeout(fit, 200);
+  setTimeout(fit, 600);
+})();
