@@ -7,7 +7,8 @@
   <link rel="stylesheet" href="style.css" />
 </head>
 <body>
-  <div class="app">
+  <!-- App fits to iframe height without scaling -->
+  <div class="app app--fit">
     <header class="top">
       <div class="title">
         <div class="badge">KODLAND</div>
@@ -19,19 +20,22 @@
       </div>
     </header>
 
-    <main class="grid">
+    <!-- main area that must fit remaining height -->
+    <main class="grid grid--fit">
       <!-- LEFT: Controls -->
-      <section class="card">
+      <section class="card card--fit">
         <h2 class="cardTitle">1. Выбор вариантов →</h2>
-        <div id="controls" class="controls"></div>
+        <!-- scroll is here if needed -->
+        <div id="controls" class="controls controls--scroll"></div>
       </section>
 
       <!-- RIGHT: Prompt preview -->
-      <section class="card previewCard">
+      <section class="card previewCard card--fit">
         <h2 class="cardTitle">2. Готовый промпт</h2>
 
-        <div class="promptBox">
-          <ol id="promptLines" class="promptLines"></ol>
+        <div class="promptBox promptBox--fit">
+          <!-- scroll is here if needed -->
+          <ol id="promptLines" class="promptLines promptLines--scroll"></ol>
 
           <button id="copyBtn" class="copyBtn" type="button">
             Скопировать промпт
@@ -43,7 +47,7 @@
     </main>
 
     <footer class="footer">
-      <span>FunTech • Prompt Builder • Andrei Pabiarzhyn </span>
+      <span>FunTech • Prompt Builder • Andrei Pabiarzhyn</span>
     </footer>
   </div>
 
