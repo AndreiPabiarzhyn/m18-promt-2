@@ -233,12 +233,6 @@ body{
   transform: translateY(0);
 }
 
-.footer{
-  color: rgba(167,192,221,.6);
-  font-size: 12px;
-  text-align:center;
-}
-
 /* chooser popup */
 .chooser{
   position: fixed;
