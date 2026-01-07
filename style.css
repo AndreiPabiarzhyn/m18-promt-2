@@ -1,0 +1,211 @@
+:root{
+  --bg:#07121f;
+  --card:#0b1b2e;
+  --text:#eaf3ff;
+  --muted:#a7c0dd;
+  --accent:#d7ff59;
+  --accent2:#7cf0ff;
+  --shadow: 0 10px 30px rgba(0,0,0,.25);
+  --radius: 16px;
+}
+
+*{ box-sizing:border-box; }
+html,body{ height:100%; }
+body{
+  margin:0;
+  font-family: system-ui, -apple-system, Segoe UI, Roboto, Arial, sans-serif;
+  background: radial-gradient(1200px 700px at 20% 10%, #0b2440 0%, var(--bg) 60%, #050b12 100%);
+  color:var(--text);
+}
+
+.app{
+  max-width: 1100px;
+  margin: 0 auto;
+  padding: 18px 14px 14px;
+}
+
+/* ---------- header ---------- */
+.top{
+  display:flex;
+  gap:14px;
+  align-items:flex-end;
+  justify-content:space-between;
+  flex-wrap:wrap;
+  margin-bottom: 12px;
+}
+
+.badge{
+  display:inline-block;
+  padding:6px 10px;
+  background: rgba(215,255,89,.12);
+  color: var(--accent);
+  border-radius: 999px;
+  font-size: 12px;
+  letter-spacing:.2px;
+  width: fit-content;
+}
+
+.title h1{
+  margin: 8px 0 0;
+  font-size: 30px;
+  line-height: 1.1;
+}
+
+.tabs{
+  display:flex;
+  background: rgba(5, 12, 20, .35);
+  padding: 5px;
+  border-radius: 999px;
+  gap: 6px;
+}
+
+.tab{
+  border:0;
+  background: transparent;
+  color: rgba(234,243,255,.8);
+  padding: 10px 14px;
+  border-radius: 999px;
+  cursor:pointer;
+  font-weight: 800;
+  font-size: 13px;
+  opacity: .8;
+}
+
+.tab.active{
+  background: rgba(215,255,89,.16);
+  color: var(--accent);
+  opacity: 1;
+}
+
+/* ---------- layout ---------- */
+.grid{
+  display:grid;
+  grid-template-columns: 1fr 1.15fr;
+  gap: 12px;
+}
+
+@media (max-width: 920px){
+  .grid{ grid-template-columns: 1fr; }
+}
+
+/* ---------- cards (minimal) ---------- */
+.card{
+  background: rgba(11,27,46,.55);
+  border-radius: var(--radius);
+  box-shadow: var(--shadow);
+  padding: 12px;
+  overflow:hidden;
+}
+
+.cardTitle{
+  margin: 0 0 10px;
+  font-size: 16px;
+  color: rgba(124,240,255,.95);
+  letter-spacing: .2px;
+}
+
+/* ---------- controls ---------- */
+.controls{
+  display:grid;
+  gap: 8px;              /* ближе друг к другу */
+}
+
+.field{
+  background: rgba(5, 12, 20, .25);
+  border-radius: 14px;
+  padding: 10px;
+}
+
+.field label{
+  display:block;
+  color: rgba(234,243,255,.85);
+  font-size: 13px;       /* немного больше */
+  margin-bottom: 6px;
+  font-weight: 800;
+}
+
+.field select,
+.field input{
+  width:100%;
+  padding: 12px 12px;    /* чуть выше, легче попадать */
+  border-radius: 12px;
+  border: none;          /* убрали обводки */
+  background: rgba(5, 12, 20, .55);
+  color: var(--text);
+  outline: none;
+  font-size: 15px;       /* больше */
+}
+
+.field input::placeholder{ color: rgba(167,192,221,.7); }
+
+.field select:focus,
+.field input:focus{
+  box-shadow: 0 0 0 2px rgba(215,255,89,.25);
+}
+
+/* ---------- prompt preview ---------- */
+.previewCard .promptBox{
+  background: rgba(5, 12, 20, .35);
+  border-radius: 14px;
+  padding: 12px;
+}
+
+.promptLines{
+  margin:0;
+  padding-left: 18px;
+  display:grid;
+  gap: 10px;
+}
+
+.promptLines li{
+  color: rgba(234,243,255,.95);
+  line-height: 1.45;
+  font-size: 17px;       /* ВАЖНО: промпт крупнее */
+}
+
+.blank{
+  display:inline-block;
+  min-width: 120px;
+  padding: 0 2px 2px;
+  border-bottom: 2px solid rgba(215,255,89,.85);
+  color: var(--accent);
+  font-weight: 900;
+}
+
+/* ---------- button ---------- */
+.copyBtn{
+  width:100%;
+  margin-top: 12px;
+  padding: 14px 14px;
+  border-radius: 14px;
+  border: none;          /* минимализм */
+  background: var(--accent);
+  color: #15210a;
+  font-weight: 1000;
+  cursor:pointer;
+  font-size: 16px;
+}
+
+.copyBtn:active{ transform: translateY(1px); }
+
+.toast{
+  margin-top: 10px;
+  min-height: 18px;
+  color: rgba(234,243,255,.92);
+  font-size: 14px;       /* чуть больше */
+  opacity: 0;
+  transform: translateY(-4px);
+  transition: opacity .18s ease, transform .18s ease;
+}
+
+.toast.show{
+  opacity: 1;
+  transform: translateY(0);
+}
+
+.footer{
+  margin-top: 10px;
+  color: rgba(167,192,221,.6);
+  font-size: 12px;
+  text-align:center;
+}

@@ -1,0 +1,52 @@
+<!doctype html>
+<html lang="ru">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>Prompt Builder (Kids)</title>
+  <link rel="stylesheet" href="style.css" />
+</head>
+<body>
+  <div class="app">
+    <header class="top">
+      <div class="title">
+        <div class="badge">KODLAND</div>
+      </div>
+
+      <div class="tabs" role="tablist" aria-label="Выбор шаблона">
+        <button class="tab active" data-template="character" role="tab" aria-selected="true">Промпт для персонажа</button>
+        <button class="tab" data-template="background" role="tab" aria-selected="false">Промпт для фона</button>
+      </div>
+    </header>
+
+    <main class="grid">
+      <!-- LEFT: Controls -->
+      <section class="card">
+        <h2 class="cardTitle">1. Выбор вариантов →</h2>
+        <div id="controls" class="controls"></div>
+      </section>
+
+      <!-- RIGHT: Prompt preview -->
+      <section class="card previewCard">
+        <h2 class="cardTitle">2. Готовый промпт</h2>
+
+        <div class="promptBox">
+          <ol id="promptLines" class="promptLines"></ol>
+
+          <button id="copyBtn" class="copyBtn" type="button">
+            Скопировать промпт
+          </button>
+
+          <div id="toast" class="toast" aria-live="polite" aria-atomic="true"></div>
+        </div>
+      </section>
+    </main>
+
+    <footer class="footer">
+      <span>FunTech • Prompt Builder • Andrei Pabiarzhyn </span>
+    </footer>
+  </div>
+
+  <script src="script.js"></script>
+</body>
+</html>
